@@ -84,7 +84,10 @@ void composite::Show (unsigned int scount) {
 }
 
 iterator * composite::createIterator () {
-	return new componentIterator(& children);
+	iterator * result;
+	if (variant_iterator == 1) result = new componentIterator(& children);
+	else result = new vectorIterator<component>(& children);
+	return result;
 }
 
 // Определяем первый контейнер

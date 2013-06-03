@@ -6,6 +6,8 @@ using std::vector;
 
 class iterator;
 
+extern int variant_iterator;
+
 /*
  * Абстрактный класс-интерфейс для всех объектов системы
  */

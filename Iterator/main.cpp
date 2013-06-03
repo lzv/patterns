@@ -4,6 +4,8 @@
 using std::cout;
 using std::endl;
 
+int variant_iterator = 0; // Так делать не следует, но этот проект демонстрирует другое
+
 int main()
 {
 	list1 * l1 = new list1;
@@ -32,14 +34,25 @@ int main()
 	main->Show();
 	cout << endl;
 	
+	variant_iterator = 1; // Методы createIterator возвращают componentIterator, либо nullIterator для листьев
+	
 	iterator * iter = main->createIterator();
 	component * c;
 	for (; !iter->isDone(); iter->next()) {
 		c = iter->currentItem();
 		cout << (c->check_is_list() ? "is list" : "not list") << endl;
 	}
-	
+	cout << endl;
 	delete iter;
+	
+	variant_iterator = 2; // Методы createIterator возвращают vectorIterator, либо nullIterator для листьев
+	
+	stackIterator iter2(main);
+	for (; !iter2.isDone(); iter2.next()) {
+		c = iter2.currentItem();
+		cout << (c->check_is_list() ? "is list" : "not list") << endl;
+	}
+	
 	delete main;
 	
 	return 0;
@@ -59,6 +72,17 @@ container type 2
             list type 2
         list type 1
     container type 2
+
+not list
+is list
+not list
+is list
+not list
+not list
+is list
+is list
+is list
+not list
 
 not list
 is list

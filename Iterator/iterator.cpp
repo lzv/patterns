@@ -22,6 +22,10 @@ componentIterator::componentIterator (component::container * root) : _root(root)
 	first();
 }
 
+componentIterator::~componentIterator () {
+	if (sub_iter != 0) delete sub_iter;
+}
+
 void componentIterator::first () {
 	iter = _root->begin();
 	if (sub_iter != 0) delete sub_iter;
@@ -51,4 +55,45 @@ component * componentIterator::currentItem () {
 		if (sub_iter == 0) return *iter;
 		else return sub_iter->currentItem();
 	}
+}
+
+// Итератор со стеком 
+
+stackIterator::stackIterator (component * root) : _root(root) {
+	first();
+}
+
+stackIterator::~stackIterator () {
+	while (!_iterators.empty()) deleteTop();
+}
+
+void stackIterator::deleteTop () {
+	// Без проверки!
+	delete _iterators.top();
+	_iterators.pop();
+}
+
+void stackIterator::first () {
+	while (!_iterators.empty()) deleteTop();
+	iterator * i = _root->createIterator();
+	i->isDone() ? delete i : _iterators.push(i);
+}
+
+void stackIterator::next () {
+	if (!isDone()) {
+		iterator * i = _iterators.top()->currentItem()->createIterator();
+		_iterators.push(i);
+		while (!isDone() and _iterators.top()->isDone()) {
+			deleteTop();
+			if (!isDone()) _iterators.top()->next();
+		}
+	}
+}
+
+bool stackIterator::isDone () {
+	return _iterators.empty();
+}
+
+component * stackIterator::currentItem () {
+	return isDone() ? 0 : _iterators.top()->currentItem();
 }
